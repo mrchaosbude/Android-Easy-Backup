@@ -37,4 +37,4 @@ def show_questnion():
 
 show_questnion()
 #exist("adb.exe")
-#antword = tkinter.messagebox.askyesno(title="ADB Not found", massage="can not find adb.exe should I download it ?")
+
