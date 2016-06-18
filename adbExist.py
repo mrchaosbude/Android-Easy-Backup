@@ -3,13 +3,14 @@ import wget
 import zipfile
 import tkinter as tk
 
-
+#check file exist
 def exist(filename):
     if os.path.exists(filename):
         print("exist")
     else:
-        show_questnion()
+        dialog()
 
+#download the zip unpack and destroy the dialog
 def get_zip():
     file_url = "http://forum.xda-developers.com/attachment.php?attachmentid=478154&d=1293906896"
     x = wget.download(file_url)
@@ -18,8 +19,8 @@ def get_zip():
     os.remove(x)
     root.destroy()
 
-
-def show_questnion():
+#ask for download the adb
+def dialog():
     global root
     root = tk.Tk()
     root.title("ADB Not found")
@@ -38,6 +39,5 @@ def show_questnion():
     root.mainloop()
 
 
-
+#run
 exist("adb.exe")
-
