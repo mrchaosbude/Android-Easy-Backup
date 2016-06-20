@@ -1,5 +1,6 @@
 from tkinter import *
 import subprocess
+import adbExist
 
 
 class StdoutRedirector(object):
@@ -19,9 +20,13 @@ class CoreGUI(object):
         self.adb_Main()
         self.adb_backup()
         self.adb_test()
-        self.text_box = Text(self.parent, wrap='word', height = 6, width=50)
+        self.scrollbar = Scrollbar(self.parent)
+        self.scrollbar.grid(column=4, row=10, sticky=N+S )
+
+        self.text_box = Text(self.parent, wrap='word', height = 10, width=88)
         self.text_box.grid(column=0, row=10, columnspan=4, sticky='NSWE', padx=5, pady=5)
         sys.stdout = StdoutRedirector(self.text_box)
+        self.scrollbar.config(command=self.text_box.yview)
 
     def adb_Main(self):
         adbmain_frame = LabelFrame(self.parent, text="ADB Main function:")
@@ -43,7 +48,7 @@ class CoreGUI(object):
         adbBackup_frame = LabelFrame(self.parent, text="Backup:")
         adbBackup_frame.grid(column=1, row=0, rowspan=1)
 
-        check_device = Button(adbBackup_frame, text="Check Device", command=lambda: self.adb("devices"))
+        check_device = Button(adbBackup_frame, text="Check Device", command=lambda: self.adb2("devices"))
         check_device.pack(padx=2, pady=2)
 
     def adb_backup(self):
@@ -53,6 +58,14 @@ class CoreGUI(object):
         check_device = Button(adbBackup_frame, text="Check Device", command=lambda: self.adb("devices"))
         check_device.pack(padx=2, pady=2)
 
+    def adb2(self, *args):
+        try:
+            out_bytes = subprocess.check_output(['adb.exe', args], timeout=5)
+        except subprocess.CalledProcessError as e:
+            out_bytes = e.output  # Output generated before error
+            code = e.returncode  # Return code
+        out_text = out_bytes.decode('utf-8')
+        print(out_text)
 
 
     def adb(self, *args):#übergiebt die befehle an adb
@@ -60,7 +73,7 @@ class CoreGUI(object):
         print(process.communicate())
         #return x.communicate(stdout)
 
-
+adbExist
 root = Tk()
 gui = CoreGUI(root)
 
