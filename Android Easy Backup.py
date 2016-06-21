@@ -39,7 +39,10 @@ class CoreGUI(object):
     def on_exit(self):
         """When you click to exit, this function is called"""
         if messagebox.askyesno("Exit", "Do you want to quit the application?"):
-            self.adb2("kill-server", print_text="Stop Server" )
+            try:
+                self.adb2("kill-server", print_text="Stop Server" )
+            except:
+                None
             root.destroy()
             exit()
 
