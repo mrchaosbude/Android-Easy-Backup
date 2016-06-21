@@ -6,18 +6,20 @@ import tkinter as tk
 #check file exist
 def exist(filename):
     if os.path.exists(filename):
-        print("exist")
+        print("adb.exe exist")
     else:
         dialog()
 
 #download the zip unpack and destroy the dialog
 def get_zip():
+    root.destroy()
     file_url = "http://forum.xda-developers.com/attachment.php?attachmentid=478154&d=1293906896"
     x = wget.download(file_url)
     with zipfile.ZipFile(x, "r") as zip_ref:
         zip_ref.extractall("")
     os.remove(x)
-    root.destroy()
+    print("Download finch")
+
 
 #ask for download the adb
 def dialog():
