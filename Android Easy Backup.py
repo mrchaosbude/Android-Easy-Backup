@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
 import subprocess
+from tkinter.ttk import Combobox
+
 import adbExist
 
 buttonw = "15"
@@ -34,12 +36,13 @@ class CoreGUI(object):
         self.text_box.grid(column=0, row=10, columnspan=4, sticky='NSWE', padx=5, pady=5)
         sys.stdout = StdoutRedirector(self.text_box)
         self.scrollbar.config(command=self.text_box.yview)
-        #self.adb2("start-server", print_text="Server Startet...", timeout_timer=2) #dont worke at the moment
+        self.adb2("start-server", print_text="Server Startet...", ) #dont worke at the moment
 
     def on_exit(self):
         """When you click to exit, this function is called"""
         if messagebox.askyesno("Exit", "Do you want to quit the application?"):
             try:
+                #pass
                 self.adb2("kill-server", print_text="Stop Server" )
             except:
                 None
@@ -47,19 +50,27 @@ class CoreGUI(object):
             exit()
 
     def adb_Main(self):
-        adbmain_frame = LabelFrame(self.parent, text="ADB Main function:")
+        adbmain_frame = LabelFrame(self.parent, text="ADB Main function:", padx=3, pady=3)
         adbmain_frame.grid(column=0, row=0, rowspan=1)
 
         check_device = Button(adbmain_frame, text="Check Device", command=lambda: self.adb2("devices"),width=buttonw)
         check_device.pack(padx=2, pady=2)
 
-        reboot = Button(adbmain_frame, text="Reboot Normal", command=lambda: self.adb2("reboot"),width=buttonw)
+        reboot = Button(adbmain_frame, text="Reboot", command=lambda: self.comboget(),width=buttonw)
         reboot.pack(padx=2, pady=2)
+
+        global v
+        v = StringVar()  # a string variable to hold user selection
+        options = ["Normal", "Recovery", "Bootloade"]  # available combobox options
+        combo = Combobox(adbmain_frame, textvariable=v, values=options, width=buttonw)
+        #combo.bind('<<ComboboxSelected>>', self.comboget)  # binding of user selection with a custom callback
+        combo.current(0)  # set as default "option 2"
+        combo.pack()
 
         reboot_recovery = Button(adbmain_frame, text="Reboot Recovery", command=lambda: self.adb2("reboot", "recovery"),width=buttonw)
         reboot_recovery.pack(padx=2, pady=2)
 
-        reboot_bootloader = Button(adbmain_frame, text="Reboot Bootloader", command=lambda: self.adb2("reboot","bootloader"),width=buttonw)
+        reboot_bootloader = Button(adbmain_frame, text="Reboot Bootloader", command=lambda: self.comboget(),width=buttonw)
         reboot_bootloader.pack(padx=2, pady=2)
 
     def adb_test(self):
@@ -90,6 +101,18 @@ class CoreGUI(object):
         process = subprocess.Popen(['adb.exe', args], stdout=subprocess.PIPE, shell=True)
         print(process.communicate())
         #return x.communicate(stdout)
+
+    def comboget (self):
+        comboboxv = ""
+        if v.get() == "Normal":
+            comboboxv = "reboot"
+        elif v.get() == "Recovery":
+            comboboxv = "reboot recovery"
+        elif v.get() == "Bootloade":
+            comboboxv = "reboot bootloader"
+        else:
+            print ("please choose")
+        self.adb2(comboboxv)
 
 adbExist
 root = Tk()

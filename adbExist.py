@@ -13,12 +13,12 @@ def exist(filename):
 #download the zip unpack and destroy the dialog
 def get_zip():
     root.destroy()
-    file_url = "http://forum.xda-developers.com/attachment.php?attachmentid=478154&d=1293906896"
+    file_url = "http://pick.cetus.uberspace.de/adb/ADB.zip"
     x = wget.download(file_url)
     with zipfile.ZipFile(x, "r") as zip_ref:
         zip_ref.extractall("")
     os.remove(x)
-    print("Download finch")
+    print("Download finish")
 
 
 #ask for download the adb
