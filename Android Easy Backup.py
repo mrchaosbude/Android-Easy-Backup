@@ -65,7 +65,7 @@ class CoreGUI(object):
         if messagebox.askyesno("Exit", "Do you want to quit the application?"):
             try:
                 #pass
-                self.adb2("kill-server", print_text="Stop Server" )
+                adb("kill-server", after_print_text="Stop Server" )
             except:
                 None
             root.destroy()
@@ -89,10 +89,10 @@ class CoreGUI(object):
         combo.current(0)  # set as default "option 2"
         combo.pack()
 
-        reboot_recovery = Button(adbmain_frame, text="Start Service", command=lambda: adb("start-server", print_text="Service startet"), width=buttonw)
+        reboot_recovery = Button(adbmain_frame, text="Start Service", command=lambda: adb("start-server", after_print_text="Service startet"), width=buttonw)
         reboot_recovery.pack(padx=2, pady=2)
 
-        reboot_bootloader = Button(adbmain_frame, text="Stop Service", command=lambda: adb("kill-server", print_text="Service Stopt"), width=buttonw)
+        reboot_bootloader = Button(adbmain_frame, text="Stop Service", command=lambda: adb("kill-server", after_print_text="Service Stopt"), width=buttonw)
         reboot_bootloader.pack(padx=2, pady=2)
 
     def adb_test(self):
@@ -106,7 +106,7 @@ class CoreGUI(object):
         adbBackup_frame = LabelFrame(self.parent, text="Backup:")
         adbBackup_frame.grid(column=2, row=0, rowspan=1)
 
-        check_device = Button(adbBackup_frame, text="Backup", command=lambda: adb("devices", print_text="Test"),width=buttonw)
+        check_device = Button(adbBackup_frame, text="Backup", command=lambda: adb("devices", after_print_text="Test"),width=buttonw)
         check_device.pack(padx=2, pady=2)
 
     def comboget (self):
@@ -119,7 +119,7 @@ class CoreGUI(object):
             comboboxv = "reboot bootloader"
         else:
             print ("please choose")
-        self.adb2(comboboxv)
+        adb(comboboxv)
 
 adbExist
 root = Tk()
