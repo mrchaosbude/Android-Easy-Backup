@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import subprocess
+from tkinter.filedialog import asksaveasfilename, askopenfilename, asksaveasfile
 from tkinter.ttk import Combobox
 import threading
 import adbExist
@@ -64,7 +65,6 @@ class CoreGUI(object):
         """When you click to exit, this function is called"""
         if messagebox.askyesno("Exit", "Do you want to quit the application?"):
             try:
-                #pass
                 adb("kill-server", after_print_text="Stop Server" )
             except:
                 None
@@ -106,10 +106,50 @@ class CoreGUI(object):
         adbBackup_frame = LabelFrame(self.parent, text="Backup:")
         adbBackup_frame.grid(column=2, row=0, rowspan=1)
 
-        check_device = Button(adbBackup_frame, text="Backup", command=lambda: adb("devices", after_print_text="Test"),width=buttonw)
-        check_device.pack(padx=2, pady=2)
+        backup_all = Button(adbBackup_frame, text="Backup All", command=self.getvar, width=buttonw)
+        backup_all.pack(padx=2, pady=2)
 
-    def comboget (self):
+        backup = Button(adbBackup_frame, text="Backup", command=self.SaveFile, width=buttonw)
+        backup.pack(padx=2, pady=2)
+
+        global apk,shared,system
+        apk = IntVar()
+        Checkbutton(adbBackup_frame, text="Apps", variable=apk).pack(padx=2, pady=2)
+
+        shared = IntVar()
+        Checkbutton(adbBackup_frame, text="shared", variable=shared).pack(padx=2, pady=2)
+
+        system = IntVar()
+        Checkbutton(adbBackup_frame, text="system", variable=system).pack(padx=2, pady=2)
+
+    def getvar(self):
+        name = asksaveasfilename(initialdir="/", initialfile="backup", filetypes=(("adb backup", ".ab"),), title="Backup", defaultextension=".ab",)
+
+        capk= ""
+        cshared = ""
+        csystem = ""
+        if apk.get() == 1:
+            capk = "-apk"
+        else:
+            capk = "-noapk"
+
+        if shared.get() == 1:
+            cshared = "-shared"
+        else:
+            cshared = "-noshared"
+
+        if system.get() == 1:
+            csystem = "-system"
+        else:
+            csystem = "-nosystem"
+
+        adb_set = "-f " + name +  " " + capk +" "+ cshared +" "+ csystem
+
+        print(adb_set)
+
+
+
+    def comboget (self): #get the chosen entery from  the combobox and give it to adb
         comboboxv = ""
         if v.get() == "Normal":
             comboboxv = "reboot"
@@ -120,6 +160,10 @@ class CoreGUI(object):
         else:
             print ("please choose")
         adb(comboboxv)
+
+    def SaveFile(self):
+        name = asksaveasfilename(initialdir="/", filetypes=(("adb backup", "*.ab"), ("All Files", "*.*")), title="Backup" )
+        return name
 
 adbExist
 root = Tk()
