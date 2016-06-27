@@ -1,9 +1,11 @@
 from tkinter import *
 from tkinter import messagebox
 import subprocess
-from tkinter.filedialog import asksaveasfilename, askopenfilename, asksaveasfile
+from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter.ttk import Combobox
 import threading
+from past.types import basestring
+
 import adbExist
 
 buttonw = "15"
@@ -15,8 +17,14 @@ class adb(object):
 
     def adb2(self, args, firdt_print_text="", after_print_text=""):
         print(firdt_print_text + "\n")
+        command = ["adb.exe ", ]
+        if isinstance(args, basestring) == True:
+            command.append(args)
+        else:
+            command = command + args
+        #print(command) #only  for testing
         try:
-            out_bytes = subprocess.check_output(['adb.exe', args])
+            out_bytes = subprocess.check_output([command, ] )
         except subprocess.CalledProcessError as e:
             out_bytes = e.output  # Output generated before error
             code = e.returncode  # Return code
@@ -106,10 +114,10 @@ class CoreGUI(object):
         adbBackup_frame = LabelFrame(self.parent, text="Backup:")
         adbBackup_frame.grid(column=2, row=0, rowspan=1)
 
-        backup_all = Button(adbBackup_frame, text="Backup All", command=self.getvar, width=buttonw)
+        backup_all = Button(adbBackup_frame, text="Backup All", command=lambda: adb("backup -all"), width=buttonw)
         backup_all.pack(padx=2, pady=2)
 
-        backup = Button(adbBackup_frame, text="Backup", command=self.SaveFile, width=buttonw)
+        backup = Button(adbBackup_frame, text="Backup", command=self.getvar, width=buttonw)
         backup.pack(padx=2, pady=2)
 
         global apk,shared,system
@@ -125,13 +133,12 @@ class CoreGUI(object):
     def getvar(self):
         name = asksaveasfilename(initialdir="/", initialfile="backup", filetypes=(("adb backup", ".ab"),), title="Backup", defaultextension=".ab",)
 
-        capk= ""
-        cshared = ""
-        csystem = ""
         if apk.get() == 1:
             capk = "-apk"
+            cobb= "-obb"
         else:
             capk = "-noapk"
+            cobb = "-noobb"
 
         if shared.get() == 1:
             cshared = "-shared"
@@ -143,9 +150,8 @@ class CoreGUI(object):
         else:
             csystem = "-nosystem"
 
-        adb_set = "-f " + name +  " " + capk +" "+ cshared +" "+ csystem
-
-        print(adb_set)
+        adb_set ="backup %s %s %s %s -f %s -all" %(capk, cobb, cshared, csystem, name)
+        adb(adb_set)
 
 
 
