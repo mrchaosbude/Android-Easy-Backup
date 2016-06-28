@@ -1,9 +1,12 @@
+import os
 from tkinter import *
 from tkinter import messagebox
 import subprocess
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter.ttk import Combobox
 import threading
+
+import time
 from past.types import basestring
 
 import adbExist
@@ -53,7 +56,7 @@ class CoreGUI(object):
     def InitUI(self):
         self.adb_Main()
         self.adb_backup()
-        self.adb_test()
+        self.adb_device_info()
 
         #root.bind('<Escape>', lambda e: root.destroy()) # esc kill the window
         root.protocol("WM_DELETE_WINDOW", self.on_exit) # ask for exit
@@ -103,12 +106,21 @@ class CoreGUI(object):
         reboot_bootloader = Button(adbmain_frame, text="Stop Service", command=lambda: adb("kill-server", after_print_text="Service Stopt"), width=buttonw)
         reboot_bootloader.pack(padx=2, pady=2)
 
-    def adb_test(self):
-        adbBackup_frame = LabelFrame(self.parent, text="test:")
-        adbBackup_frame.grid(column=1, row=0, rowspan=1)
+    def adb_device_info(self):
+        adb_device_info_frame = LabelFrame(self.parent, text="Device info:")
+        adb_device_info_frame.grid(column=1, row=0, rowspan=1)
 
-        check_device = Button(adbBackup_frame, text="Check Device", command=lambda: adb("start-server"))
-        check_device.pack(padx=2, pady=2)
+        screenshot = Button(adb_device_info_frame, text="Screenshot", command=lambda: self.screenshot(), width=buttonw)
+        screenshot.pack(padx=2, pady=2)
+
+        battery_info = Button(adb_device_info_frame, text="Battery info", command=lambda: adb("shell dumpsys battery"), width=buttonw)
+        battery_info.pack(padx=2, pady=2)
+
+        wifi_info = Button(adb_device_info_frame, text="Wifi info", command=lambda: adb("shell dumpsys wifi"), width=buttonw)
+        wifi_info.pack(padx=2, pady=2)
+
+        cpu_info = Button(adb_device_info_frame, text="CPU info", command=lambda: adb("shell dumpsys cpuinfo"), width=buttonw)
+        cpu_info.pack(padx=2, pady=2)
 
     def adb_backup(self):
         adbBackup_frame = LabelFrame(self.parent, text="Backup:")
@@ -130,8 +142,11 @@ class CoreGUI(object):
         system = IntVar()
         Checkbutton(adbBackup_frame, text="system", variable=system).pack(padx=2, pady=2)
 
+        restore = Button(adbBackup_frame, text="Restore", command=self.restore_backup, width=buttonw)
+        restore.pack(padx=2, pady=2)
+
     def getvar(self):
-        name = asksaveasfilename(initialdir="/", initialfile="backup", filetypes=(("adb backup", ".ab"),), title="Backup", defaultextension=".ab",)
+        name = asksaveasfilename(initialdir="/", initialfile="backup", filetypes=(("Android backup", ".ab"),), title="Backup", defaultextension=".ab",)
 
         if apk.get() == 1:
             capk = "-apk"
@@ -150,10 +165,13 @@ class CoreGUI(object):
         else:
             csystem = "-nosystem"
 
-        adb_set ="backup %s %s %s %s -f %s -all" %(capk, cobb, cshared, csystem, name)
+        adb_set ="backup %s %s %s %s -all -f %s " %(capk, cobb, cshared, csystem, name)
         adb(adb_set)
 
-
+    def restore_backup(self):
+        filename = askopenfilename(parent=self.parent, filetypes=[('Android backup', '*.ab'), ('allfiles', '*')], title='Select Module')
+        command = "backup %s" %(filename)
+        adb(command, firdt_print_text="start restore this can tacke a wihle", after_print_text="Finish" )
 
     def comboget (self): #get the chosen entery from  the combobox and give it to adb
         comboboxv = ""
@@ -166,10 +184,13 @@ class CoreGUI(object):
         else:
             print ("please choose")
         adb(comboboxv)
+    def screenshot(self):
+        adb("shell screencap -p /sdcard/screen.png")
+        time.sleep(3)
+        adb("pull /sdcard/screen.png")
+        adb("shell rm /sdcard/screen.png")
+        os.startfile("screen.png")
 
-    def SaveFile(self):
-        name = asksaveasfilename(initialdir="/", filetypes=(("adb backup", "*.ab"), ("All Files", "*.*")), title="Backup" )
-        return name
 
 adbExist
 root = Tk()
