@@ -5,9 +5,9 @@ import subprocess
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter.ttk import Combobox
 import threading
-
 import time
 from past.types import basestring
+
 
 import adbExist
 
@@ -61,12 +61,16 @@ class CoreGUI(object):
         #root.bind('<Escape>', lambda e: root.destroy()) # esc kill the window
         root.protocol("WM_DELETE_WINDOW", self.on_exit) # ask for exit
 
+        photo = PhotoImage(file="./img/top.gif")
+        w = Label(self.parent, image=photo)
+        w.photo = photo
+        w.grid(column=0, row=1, columnspan=3 ,sticky=W+E )
+
         self.scrollbar = Scrollbar(self.parent)
-        self.scrollbar.grid(column=4, row=10, sticky=N+S )
+        self.scrollbar.grid(column=3, row=3, sticky=N+S )
 
-
-        self.text_box = Text(self.parent, wrap='word', yscrollcommand=self.scrollbar.set, height = 10, width=88)
-        self.text_box.grid(column=0, row=10, columnspan=4, sticky='NSWE', padx=5, pady=5)
+        self.text_box = Text(self.parent, wrap='word', yscrollcommand=self.scrollbar.set, height = 10, width=80)
+        self.text_box.grid(column=0, row=3, columnspan=3, sticky='NSWE' )
         sys.stdout = StdoutRedirector(self.text_box)
         self.scrollbar.config(command=self.text_box.yview)
         #self.adb2("start-server", print_text="Service Startet...", )
@@ -84,7 +88,7 @@ class CoreGUI(object):
 
     def adb_Main(self):
         adbmain_frame = LabelFrame(self.parent, text="ADB Main function:", padx=3, pady=3)
-        adbmain_frame.grid(column=0, row=0, rowspan=1)
+        adbmain_frame.grid(column=0, row=2)
 
         check_device = Button(adbmain_frame, text="Check Device", command=lambda: adb("devices"),width=buttonw)
         check_device.pack(padx=2, pady=2)
@@ -108,7 +112,7 @@ class CoreGUI(object):
 
     def adb_device_info(self):
         adb_device_info_frame = LabelFrame(self.parent, text="Device info:")
-        adb_device_info_frame.grid(column=1, row=0, rowspan=1)
+        adb_device_info_frame.grid(column=1, row=2)
 
         screenshot = Button(adb_device_info_frame, text="Screenshot", command=lambda: self.screenshot(), width=buttonw)
         screenshot.pack(padx=2, pady=2)
@@ -124,7 +128,7 @@ class CoreGUI(object):
 
     def adb_backup(self):
         adbBackup_frame = LabelFrame(self.parent, text="Backup:")
-        adbBackup_frame.grid(column=2, row=0, rowspan=1)
+        adbBackup_frame.grid(column=2, row=2)
 
         backup_all = Button(adbBackup_frame, text="Backup All", command=lambda: adb("backup -all"), width=buttonw)
         backup_all.pack(padx=2, pady=2)
@@ -184,10 +188,12 @@ class CoreGUI(object):
         else:
             print ("please choose")
         adb(comboboxv)
+
     def screenshot(self):
-        adb("shell screencap -p /sdcard/screen.png")
-        time.sleep(3)
+        adb.adb2("shell screencap -p /sdcard/screen.png")
+        time.sleep(1.5)
         adb("pull /sdcard/screen.png")
+        time.sleep(1.5)
         adb("shell rm /sdcard/screen.png")
         os.startfile("screen.png")
 
