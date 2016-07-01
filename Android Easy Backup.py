@@ -166,6 +166,10 @@ class CoreGUI(object):
     def info(self):
         nfo = Toplevel()
         nfo.title("Info")
+        nfo.geometry("%dx%d%+d%+d" % (300, 200, 550, 525))#size , position
+
+
+
         disclaimer =(
         "I am not responsible in any way,"
         "shape, or form, \ndirectly or indirectly for anything good or bad\n"
