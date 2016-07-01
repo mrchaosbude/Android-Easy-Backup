@@ -167,17 +167,17 @@ class CoreGUI(object):
         nfo = Toplevel()
         nfo.title("Info")
         disclaimer =(
-        "I am not responsible in any way,\n"
+        "I am not responsible in any way,"
         "shape, or form, \ndirectly or indirectly for anything good or bad\n"
         "that happens to your device")
 
-        T = Text(nfo, height=4, width=50, )
-        T.pack()
-        T.insert(END, disclaimer)
-        #lb = Listbox(height=10, width=20)
-        #lb.insert(END, *disclaimer)
-        #lb.grid(nfo, row=0, column=0, rowspan=1, columnspan=1, sticky=NSEW)
+        separator = Frame(nfo, height=2, bd=1, relief=SUNKEN)
+        separator.pack(fill=X, padx=5, pady=5)
 
+        Label(nfo, justify=CENTER, padx=10, text=disclaimer, fg = "red", font = "Verdana 7 bold").pack()
+
+        separator = Frame(nfo, height=2, bd=1, relief=SUNKEN)
+        separator.pack(fill=X, padx=5, pady=5)
 
         info = Button(nfo, text="Close", command= nfo.destroy, width=buttonw)
         info.pack()
