@@ -57,6 +57,7 @@ class CoreGUI(object):
         self.adb_Main()
         self.adb_backup()
         self.adb_device_info()
+        self.down_panel()
 
         #root.bind('<Escape>', lambda e: root.destroy()) # esc kill the window
         root.protocol("WM_DELETE_WINDOW", self.on_exit) # ask for exit
@@ -70,7 +71,7 @@ class CoreGUI(object):
         self.scrollbar.grid(column=3, row=3, sticky=N+S )
 
         self.text_box = Text(self.parent, wrap='word', yscrollcommand=self.scrollbar.set, height = 10, width=80)
-        self.text_box.grid(column=0, row=3, columnspan=3, sticky='NSWE' )
+        self.text_box.grid(column=0, row=3, columnspan=3,  )
         sys.stdout = StdoutRedirector(self.text_box)
         self.scrollbar.config(command=self.text_box.yview)
         #self.adb2("start-server", print_text="Service Startet...", )
@@ -114,8 +115,8 @@ class CoreGUI(object):
         adb_device_info_frame = LabelFrame(self.parent, text="Device info:")
         adb_device_info_frame.grid(column=1, row=2)
 
-        screenshot = Button(adb_device_info_frame, text="Screenshot", command=lambda: self.screenshot(), width=buttonw)
-        screenshot.pack(padx=2, pady=2)
+        #screenshot = Button(adb_device_info_frame, text="Screenshot", command=lambda: self.screenshot(), width=buttonw)
+        #screenshot.pack(padx=2, pady=2)
 
         battery_info = Button(adb_device_info_frame, text="Battery info", command=lambda: adb("shell dumpsys battery"), width=buttonw)
         battery_info.pack(padx=2, pady=2)
@@ -128,12 +129,12 @@ class CoreGUI(object):
 
     def adb_backup(self):
         adbBackup_frame = LabelFrame(self.parent, text="Backup:")
-        adbBackup_frame.grid(column=2, row=2)
+        adbBackup_frame.grid(column=2, row=2,)
 
         backup_all = Button(adbBackup_frame, text="Backup All", command=lambda: adb("backup -all"), width=buttonw)
         backup_all.pack(padx=2, pady=2)
 
-        backup = Button(adbBackup_frame, text="Backup", command=self.getvar, width=buttonw)
+        backup = Button(adbBackup_frame, text="Backup Selected", command=self.getvar, width=buttonw)
         backup.pack(padx=2, pady=2)
 
         global apk,shared,system
@@ -148,6 +149,38 @@ class CoreGUI(object):
 
         restore = Button(adbBackup_frame, text="Restore", command=self.restore_backup, width=buttonw)
         restore.pack(padx=2, pady=2)
+
+    def down_panel(self):
+        down_panel = Frame(self.parent)
+        down_panel.grid(column=0, row=5, sticky=W+E, columnspan=4)
+
+        separator = Frame(down_panel, height=2, bd=1, relief=SUNKEN)
+        separator.pack(fill=X, padx=5, pady=5)
+
+        info = Button(down_panel, text="Info", command=self.info, width=buttonw)
+        info.pack(padx=2, pady=2, side=LEFT)
+
+        info = Button(down_panel, text="Quit", command=self.on_exit, width=buttonw)
+        info.pack(padx=2, pady=2, side=RIGHT)
+
+    def info(self):
+        nfo = Toplevel()
+        nfo.title("Info")
+        disclaimer =(
+        "I am not responsible in any way,\n"
+        "shape, or form, \ndirectly or indirectly for anything good or bad\n"
+        "that happens to your device")
+
+        T = Text(nfo, height=4, width=50, )
+        T.pack()
+        T.insert(END, disclaimer)
+        #lb = Listbox(height=10, width=20)
+        #lb.insert(END, *disclaimer)
+        #lb.grid(nfo, row=0, column=0, rowspan=1, columnspan=1, sticky=NSEW)
+
+
+        info = Button(nfo, text="Close", command= nfo.destroy, width=buttonw)
+        info.pack()
 
     def getvar(self):
         name = asksaveasfilename(initialdir="/", initialfile="backup", filetypes=(("Android backup", ".ab"),), title="Backup", defaultextension=".ab",)
@@ -190,11 +223,13 @@ class CoreGUI(object):
         adb(comboboxv)
 
     def screenshot(self):
-        adb.adb2("shell screencap -p /sdcard/screen.png")
-        time.sleep(1.5)
+
+        adb(args="shell screencap -p /sdcard/screen.png")
+        time.sleep(2)
         adb("pull /sdcard/screen.png")
-        time.sleep(1.5)
+        time.sleep(2)
         adb("shell rm /sdcard/screen.png")
+        time.sleep(2)
         os.startfile("screen.png")
 
 
@@ -202,5 +237,6 @@ adbExist
 root = Tk()
 root.title('Android Easy Backup')
 gui = CoreGUI(root)
+root.resizable(width=False, height=False)
 
 root.mainloop()
