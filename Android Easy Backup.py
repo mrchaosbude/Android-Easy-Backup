@@ -8,7 +8,7 @@ import threading
 import time
 from past.types import basestring
 
-
+import vcheck
 import adbExist
 
 buttonw = "15"
@@ -88,6 +88,7 @@ class CoreGUI(object):
             exit()
 
     def adb_Main(self):
+        vcheck.runCheck()
         adbmain_frame = LabelFrame(self.parent, text="ADB Main function:", padx=3, pady=3)
         adbmain_frame.grid(column=0, row=2)
 
@@ -160,9 +161,15 @@ class CoreGUI(object):
         info = Button(down_panel, text="Info", command=self.info, width=buttonw)
         info.pack(padx=2, pady=2, side=LEFT)
 
-        info = Button(down_panel, text="Quit", command=self.on_exit, width=buttonw)
-        info.pack(padx=2, pady=2, side=RIGHT)
+        ucheck = Button(down_panel, text="Update", command= vcheck.vcheck, width=buttonw)
+        ucheck.pack(padx=2, pady=2, side=LEFT)
 
+        quit = Button(down_panel, text="Quit", command=self.on_exit, width=buttonw)
+        quit.pack(padx=2, pady=2, side=RIGHT)
+
+    #def v_check(self):
+       # a = vcheck
+        #a.vcheck()
     def info(self):
         nfo = Toplevel()
         nfo.title("Info")
@@ -183,8 +190,8 @@ class CoreGUI(object):
         separator = Frame(nfo, height=2, bd=1, relief=SUNKEN)
         separator.pack(fill=X, padx=5, pady=5)
 
-        info = Button(nfo, text="Close", command= nfo.destroy, width=buttonw)
-        info.pack()
+        close = Button(nfo, text="Close", command= nfo.destroy, width=buttonw)
+        close.pack()
 
     def getvar(self):
         name = asksaveasfilename(initialdir="/", initialfile="backup", filetypes=(("Android backup", ".ab"),), title="Backup", defaultextension=".ab",)
