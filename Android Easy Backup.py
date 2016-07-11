@@ -81,11 +81,12 @@ class CoreGUI(object):
         """When you click to exit, this function is called"""
         if messagebox.askyesno("Exit", "Do you want to quit the application?"):
             try:
-                adb("kill-server", after_print_text="Stop Server" )
+                adb.adb2("kill-server", after_print_text="Stop Server" )
             except:
                 None
+            os.system("taskkill /F /im adb.exe")
             root.destroy()
-            exit()
+            raise SystemExit
 
     def adb_Main(self):
         vcheck.auto_version_check()
