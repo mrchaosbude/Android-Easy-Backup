@@ -25,6 +25,7 @@ def get_zip():
 def dialog():
     global root
     root = tk.Tk()
+    root.resizable(False, False)
     root.title("ADB Not found")
 
     label = tk.Label(root, text="Can not find adb.exe should i download it ?")

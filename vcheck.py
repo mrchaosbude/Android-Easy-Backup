@@ -1,13 +1,25 @@
+from threading import Thread
 from urllib import request
 from lxml import etree
 import tkinter as tk
 import webbrowser
 import json
 
-version = "0.9.0"
+version = "0.1.0"
 
+def auto_version_check():
+    t = Thread(target=runCheck, args=(True,))
+    t.start()
 
-def runCheck():
+def version_check():
+    print("This will only take a moment, please wait!")
+    t = Thread(target=runCheck, args=(False,))
+    t.start()
+
+def return_version():
+    return version
+
+def runCheck(autocheck):
     try:
         with open('data.json', 'r') as f:
             data = json.load(f)
@@ -17,9 +29,9 @@ def runCheck():
             data = 0
 
     if data == 0:
-        vcheck()
+        vcheck(autocheck)
 
-def vcheck():
+def vcheck(autocheck):
     req = "http://pick.cetus.uberspace.de/adb/version.xml"
     update = request.urlopen(req).read()
 
@@ -37,7 +49,8 @@ def vcheck():
     if currentVersionValue != version:
         dialog(messageValue,urlValue, status=True)
     else:
-        dialog(status=False)
+        if autocheck == False:
+            dialog(messageValue,urlValue, status=False)
 
 def callback(event):
     webbrowser.open_new(event.widget.cget("text"))
@@ -46,6 +59,7 @@ def dialog(masage,url,status=None):
     global root_vcheck
     root_vcheck = tk.Toplevel()
     root_vcheck.title("Update")
+    root_vcheck.resizable(False, False)
     if status == True:
         label = tk.Label(root_vcheck, text=masage)
         label.pack(side="top", fill="both", expand=True, padx=20, pady=20)

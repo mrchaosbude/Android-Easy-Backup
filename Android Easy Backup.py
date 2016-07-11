@@ -88,7 +88,7 @@ class CoreGUI(object):
             exit()
 
     def adb_Main(self):
-        vcheck.runCheck()
+        vcheck.auto_version_check()
         adbmain_frame = LabelFrame(self.parent, text="ADB Main function:", padx=3, pady=3)
         adbmain_frame.grid(column=0, row=2)
 
@@ -161,7 +161,7 @@ class CoreGUI(object):
         info = Button(down_panel, text="Info", command=self.info, width=buttonw)
         info.pack(padx=2, pady=2, side=LEFT)
 
-        ucheck = Button(down_panel, text="Update", command= vcheck.vcheck, width=buttonw)
+        ucheck = Button(down_panel, text="Update", command= vcheck.version_check, width=buttonw)
         ucheck.pack(padx=2, pady=2, side=LEFT)
 
         quit = Button(down_panel, text="Quit", command=self.on_exit, width=buttonw)
