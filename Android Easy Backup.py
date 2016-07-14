@@ -1,4 +1,5 @@
 import os
+import webbrowser
 from tkinter import *
 from tkinter import messagebox
 import subprocess
@@ -12,6 +13,8 @@ import vcheck
 import adbExist
 
 buttonw = "15"
+
+
 
 class adb(object):
     def __init__(self, args, firdt_print_text="", after_print_text=""):
@@ -166,17 +169,35 @@ class CoreGUI(object):
         ucheck.pack(padx=2, pady=2, side=LEFT)
 
         quit = Button(down_panel, text="Quit", command=self.on_exit, width=buttonw)
-        quit.pack(padx=2, pady=2, side=RIGHT)
+        quit.pack(padx=5, pady=5, side=RIGHT)
 
     #def v_check(self):
        # a = vcheck
         #a.vcheck()
+
     def info(self):
         nfo = Toplevel()
         nfo.title("Info")
-        nfo.geometry("%dx%d%+d%+d" % (300, 200, 550, 525))#size , position
+        nfo.geometry("%dx%d%+d%+d" % (300, 450, 550, 325))#size , position
 
+        photo = PhotoImage(file="./img/logo.ppm")
+        w = Label(nfo, image=photo)
+        w.photo = photo
+        w.pack()
 
+        Label(nfo, justify=CENTER, padx=10, pady=10, text="Version: {}".format(vcheck.return_version())).pack()
+        #-------- only for email
+        emailframe = Frame(nfo)
+        emailframe.pack()
+
+        Label(emailframe, justify=CENTER, padx=10, text="Email:").pack(side = LEFT)
+        email = Text(emailframe, width=18, height=1)
+        email.insert(END, "mail@chaosbude.com")
+        email.configure(state='disabled')
+        email.pack(side = LEFT)
+        #-------- / only for email
+        cb = Button(nfo, text="Visit: Chaosbude.com", relief=RIDGE, command=lambda: webbrowser.open("http://chaosbude.com/"), bd=2 )
+        cb.pack(padx=5, pady=5)
 
         disclaimer =(
         "I am not responsible in any way,"
