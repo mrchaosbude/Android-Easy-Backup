@@ -171,6 +171,20 @@ class CoreGUI(object):
         quit = Button(down_panel, text="Quit", command=self.on_exit, width=buttonw)
         quit.pack(padx=5, pady=5, side=RIGHT)
 
+        amazonimg = PhotoImage(file="./img/amazonbutton.gif")
+        amazon = Button(down_panel, image=amazonimg, relief=RIDGE,
+                        command=lambda: webbrowser.open("http://amzn.to/29JSwe3"), bd=0)
+        amazon.pack(padx=3, pady=2, side=RIGHT)
+        amazon.image = amazonimg
+
+        paypalimg = PhotoImage(file="./img/paypalbutton.gif")
+        paypal = Button(down_panel, image=paypalimg, relief=RIDGE,
+                        command=lambda: webbrowser.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8FYTM8RD793HU"), bd=0)
+        paypal.pack(padx=3, pady=2, side=RIGHT)
+        paypal.image = paypalimg
+
+
+
     #def v_check(self):
        # a = vcheck
         #a.vcheck()
