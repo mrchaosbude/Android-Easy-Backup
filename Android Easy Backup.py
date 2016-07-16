@@ -14,15 +14,13 @@ import adbExist
 
 buttonw = "15"
 
-
-
 class adb(object):
-    def __init__(self, args, firdt_print_text="", after_print_text=""):
-        t = threading.Thread(target=self.adb2, args=(args, firdt_print_text, after_print_text))
+    def __init__(self, args, first_print_text="", after_print_text=""):
+        t = threading.Thread(target=self.adb2, args=(args, first_print_text, after_print_text))
         t.start()
 
-    def adb2(self, args, firdt_print_text="", after_print_text=""):
-        print(firdt_print_text + "\n")
+    def adb2(self, args, first_print_text="", after_print_text=""):
+        print(first_print_text + "\n")
         command = ["adb.exe ", ]
         if isinstance(args, basestring) == True:
             command.append(args)
@@ -50,6 +48,8 @@ class StdoutRedirector(object):
     def write(self,string):
         self.text_space.insert('end', string)
         self.text_space.see('end')
+
+def flush(self): pass
 
 class CoreGUI(object):
     def __init__(self,parent):
@@ -183,16 +183,11 @@ class CoreGUI(object):
         paypal.pack(padx=3, pady=2, side=RIGHT)
         paypal.image = paypalimg
 
-
-
-    #def v_check(self):
-       # a = vcheck
-        #a.vcheck()
-
     def info(self):
         nfo = Toplevel()
         nfo.title("Info")
         nfo.geometry("%dx%d%+d%+d" % (300, 450, 550, 325))#size , position
+        nfo.resizable(width=False, height=False)
 
         photo = PhotoImage(file="./img/logo.ppm")
         w = Label(nfo, image=photo)
@@ -249,8 +244,12 @@ class CoreGUI(object):
         else:
             csystem = "-nosystem"
 
-        adb_set ="backup %s %s %s %s -all -f %s " %(capk, cobb, cshared, csystem, name)
-        adb(adb_set)
+        adb_set ="backup %s %s %s %s -all -f %s" %(capk, cobb, cshared, csystem, name)
+        adb(adb_set, first_print_text="now unlock your device and confirm the backup operation")
+        """time.sleep(1)
+        adb("shell input keyevent 22")
+        time.sleep(1)
+        adb("shell input keyevent 23")"""
 
     def restore_backup(self):
         filename = askopenfilename(parent=self.parent, filetypes=[('Android backup', '*.ab'), ('allfiles', '*')], title='Select Module')
