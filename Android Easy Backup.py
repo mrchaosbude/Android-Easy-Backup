@@ -6,7 +6,6 @@ import subprocess
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter.ttk import Combobox
 import threading
-import time
 from past.types import basestring
 
 import vcheck
@@ -246,15 +245,11 @@ class CoreGUI(object):
 
         adb_set ="backup %s %s %s %s -all -f %s" %(capk, cobb, cshared, csystem, name)
         adb(adb_set, first_print_text="now unlock your device and confirm the backup operation")
-        """time.sleep(1)
-        adb("shell input keyevent 22")
-        time.sleep(1)
-        adb("shell input keyevent 23")"""
 
     def restore_backup(self):
         filename = askopenfilename(parent=self.parent, filetypes=[('Android backup', '*.ab'), ('allfiles', '*')], title='Select Module')
-        command = "backup %s" %(filename)
-        adb(command, firdt_print_text="start restore this can tacke a wihle", after_print_text="Finish" )
+        command = "restore %s" %(filename)
+        adb(command, first_print_text="start restore this can tacke a wihle", after_print_text="Finish" )
 
     def comboget (self): #get the chosen entery from  the combobox and give it to adb
         comboboxv = ""
@@ -268,15 +263,6 @@ class CoreGUI(object):
             print ("please choose")
         adb(comboboxv)
 
-    def screenshot(self):
-
-        adb(args="shell screencap -p /sdcard/screen.png")
-        time.sleep(2)
-        adb("pull /sdcard/screen.png")
-        time.sleep(2)
-        adb("shell rm /sdcard/screen.png")
-        time.sleep(2)
-        os.startfile("screen.png")
 
 
 adbExist
