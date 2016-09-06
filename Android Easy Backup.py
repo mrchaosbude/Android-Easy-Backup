@@ -13,6 +13,16 @@ import adbExist
 
 buttonw = "15"
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class adb(object):
     def __init__(self, args, first_print_text="", after_print_text=""):
         t = threading.Thread(target=self.adb2, args=(args, first_print_text, after_print_text))
@@ -64,7 +74,8 @@ class CoreGUI(object):
         #root.bind('<Escape>', lambda e: root.destroy()) # esc kill the window
         root.protocol("WM_DELETE_WINDOW", self.on_exit) # ask for exit
 
-        photo = PhotoImage(file="./img/top.gif")
+        top =resource_path("img\\top.gif")
+        photo = PhotoImage(file=top)
         w = Label(self.parent, image=photo)
         w.photo = photo
         w.grid(column=0, row=1, columnspan=3 ,sticky=W+E )
@@ -170,13 +181,14 @@ class CoreGUI(object):
         quit = Button(down_panel, text="Quit", command=self.on_exit, width=buttonw)
         quit.pack(padx=5, pady=5, side=RIGHT)
 
-        amazonimg = PhotoImage(file="./img/amazonbutton.gif")
+        amazonpath = resource_path("img\\amazonbutton.gif")
+        amazonimg = PhotoImage(file=amazonpath)
         amazon = Button(down_panel, image=amazonimg, relief=RIDGE,
                         command=lambda: webbrowser.open("http://amzn.to/29JSwe3"), bd=0)
         amazon.pack(padx=3, pady=2, side=RIGHT)
         amazon.image = amazonimg
-
-        paypalimg = PhotoImage(file="./img/paypalbutton.gif")
+        paypalpath = resource_path("img\\paypalbutton.gif")
+        paypalimg = PhotoImage(file=paypalpath)
         paypal = Button(down_panel, image=paypalimg, relief=RIDGE,
                         command=lambda: webbrowser.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8FYTM8RD793HU"), bd=0)
         paypal.pack(padx=3, pady=2, side=RIGHT)
@@ -187,8 +199,8 @@ class CoreGUI(object):
         nfo.title("Info")
         nfo.geometry("%dx%d%+d%+d" % (300, 450, 550, 325))#size , position
         nfo.resizable(width=False, height=False)
-
-        photo = PhotoImage(file="./img/logo.ppm")
+        photopath = resource_path("img\\logo.ppm")
+        photo = PhotoImage(file=photopath)
         w = Label(nfo, image=photo)
         w.photo = photo
         w.pack()
