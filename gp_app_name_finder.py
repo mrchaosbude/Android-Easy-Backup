@@ -9,4 +9,7 @@ def playStore_scan(app):
     thepage = urllib.request.urlopen(theurl, context=context)
     soup = BeautifulSoup(thepage,"html.parser")
     result = soup.find("div",{"class":"id-app-title"}).text
-    return result
+    resultdescription = soup.find("div",{"jsname":"C4s9Ed"}).text
+    return result,resultdescription
+
+print(playStore_scan("com.adobe.reader")[1])
