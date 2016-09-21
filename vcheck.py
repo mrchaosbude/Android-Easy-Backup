@@ -1,6 +1,5 @@
 from threading import Thread
 from urllib import request
-from lxml import etree
 import tkinter as tk
 import webbrowser
 import json
@@ -32,19 +31,15 @@ def runCheck(autocheck):
         vcheck(autocheck)
 
 def vcheck(autocheck):
-    req = "http://pick.cetus.uberspace.de/adb/version.xml"
-    update = request.urlopen(req).read()
+    req = "http://pick.cetus.uberspace.de/adb/version.json"
+    update = request.urlopen(req).read().decode('utf8')
+    json_data = json.loads(update)
 
-    root_vcheck = etree.XML(update)
+    currentVersionValue = json_data["version"]
 
-    currentVersion = root_vcheck.find(".//currentVersion")
-    currentVersionValue = currentVersion.text
+    messageValue = json_data["massage"]
 
-    message = root_vcheck.find(".//message")
-    messageValue = message.text
-
-    url = root_vcheck.find(".//url")
-    urlValue = url.text
+    urlValue = json_data["url"]
 
     if currentVersionValue != version:
         dialog(messageValue,urlValue, status=True)
